@@ -1,0 +1,188 @@
+# Poker Game Simulator — Fullstack
+
+This repository contains both the **frontend (Next.js + TypeScript)** and **backend (FastAPI + Python)** for a simplified Texas Holdem Poker simulator.
+
+---
+
+## Table of Contents
+
+1. [Project Overview](#project-overview)
+2. [Tech Stack](#tech-stack)
+3. [Environment Variables](#environment-variables)
+4. [Running Locally](#running-locally)
+5. [Running with Docker](#running-with-docker)
+6. [Testing](#testing)
+7. [Project Structure](#project-structure)
+
+---
+
+## Project Overview
+
+* Play a full 6-player Texas Holdem hand
+* Interact with standard poker actions (fold, call, bet, raise, all-in)
+* Logs every action and game state
+* Saves completed hands to a PostgreSQL database
+* Displays hand history with action summary and results
+
+---
+
+## Tech Stack
+
+### Frontend
+
+* Next.js (React, TypeScript)
+* shadcn/ui
+* Playwright (for E2E testing)
+* Vitest (for unit testing game logic)
+
+### Backend
+
+* FastAPI (Python)
+* PostgreSQL
+* Raw SQL with Repository Pattern
+* Dataclasses for models
+* `pokerkit` for evaluating hand outcomes
+* Poetry for dependency management
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the backend root:
+
+```dotenv
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=poker
+DB_USER=postgres
+DB_PASSWORD=yourpassword
+```
+
+Create a `.env.local` file in the frontend root:
+
+```dotenv
+NEXT_PUBLIC_API_URL=http://localhost:8000
+PORT=3000
+```
+
+---
+
+## Running Locally
+
+### 1. Clone the repository
+
+```bash
+git clone <your-repo-url>
+cd poker
+```
+
+### 2. Start the Backend
+
+```bash
+cd backend
+poetry install
+poetry run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+Make sure your PostgreSQL database is running and schema is initialized.
+
+### 3. Start the Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Then open [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Running with Docker
+
+From the **project root**, run:
+
+```bash
+docker compose up -d
+```
+
+This will:
+
+* Start PostgreSQL
+* Start FastAPI backend
+* Start Next.js frontend
+
+After a few seconds, visit: [http://localhost:3000](http://localhost:3000)
+
+> ⚠️ Ensure your `.env` and `.env.local` are configured before running Docker Compose.
+
+---
+
+## Testing
+
+### Frontend
+
+#### Unit Tests (Vitest)
+
+```bash
+cd frontend
+npm run test:unit
+```
+
+#### E2E Test (Playwright)
+
+```bash
+cd frontend
+npx playwright install
+npx playwright codegen http://localhost:3000
+```
+
+### Backend
+
+#### Run FastAPI Tests
+
+```bash
+cd backend
+poetry run pytest
+```
+
+---
+
+## Project Structure
+
+```
+poker/
+├── backend/
+│   ├── app/
+│   │   ├── api/            # FastAPI routes
+│   │   ├── db/             # Raw SQL queries & repository pattern
+│   │   ├── models/         # Dataclasses for entities
+│   │   ├── poker/          # Game logic & pokerkit integration
+│   │   └── main.py         # FastAPI entrypoint
+│   ├── tests/              # Backend tests
+│   └── pyproject.toml      # Poetry config
+├── frontend/
+│   ├── components/
+│   ├── lib/
+│   ├── pages/
+│   ├── tests/
+│   ├── public/
+│   ├── Dockerfile
+│   └── package.json
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## Notes
+
+* The backend uses raw SQL — no ORMs.
+* The frontend is a single-page app with React components.
+* E2E test confirms UI flow from start → actions → history log.
+
+---
+
+## License
+
+This project is for educational and technical demonstration purposes only.
